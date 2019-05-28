@@ -1,0 +1,29 @@
+{
+  "name": "sp-batch-builder",
+  "version": "0.0.1",
+  "description": "A utility to simplify building batch requests in SharePoint.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbonfardeci/sp-batch-builder.git"
+  },
+  "keywords": [
+    "sharepoint",
+    "batch",
+    "request",
+    "builder"
+  ],
+  "author": "John Bonfardeci",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jbonfardeci/sp-batch-builder/issues"
+  },
+  "homepage": "https://github.com/jbonfardeci/sp-batch-builder#readme",
+  "dependencies": {
+    "@types/jquery": "^3.3.29",
+    "jquery": "^3.4.1"
+  }
+}
