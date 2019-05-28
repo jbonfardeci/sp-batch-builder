@@ -65,7 +65,7 @@ accept:application/json;odata=verbose
 --batch_8890ae8a-f656-475b-a47b-d46e194fa574--
 ```
 
-The Batch Builder utility greatly simplifies build a batch request. For example, sending 2 insert, 2 update, and 2 delete requests:
+The Batch Builder utility greatly simplifies building a batch request. For example, sending 2 insert, 2 update, and 2 delete requests:
 
 ```(JavaScript)
 
