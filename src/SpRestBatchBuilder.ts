@@ -36,6 +36,12 @@ export class SpRestBatchBuilder {
     return `${siteUrl}_api/web/lists(guid'${listGuid}')/items` + (itemId ? `(${itemId})` : '');
   }
 
+  public get(endpoint: string, headers?: any): SpRestBatchBuilder {
+    const batchRequest = new BatchRequest(endpoint, null, headers, 'GET');
+    this.loadRequest(batchRequest);
+    return this;
+  }
+
   public insert(siteUrl: string, listGuid: string, payload: any, type: string): SpRestBatchBuilder{
     const endpoint = this.createListItemsUrl(siteUrl, listGuid);
     const data = $.extend(payload, { __metadata: { type: type } });
