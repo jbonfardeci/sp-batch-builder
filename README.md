@@ -71,9 +71,11 @@ The Batch Builder utility greatly simplifies building a batch request. For examp
 
 const siteUrl = 'https://my-sharepoint-site.com/sites/my-site;
 const listGuid = 'my-list-guid';
-const batchExec = new SpRestBatchBuilder(siteUrl);
 const camlListName = 'camlListName';
 const listItemType = `SP.Data.${camlListName}ListItem`;
+
+// Instantiate batch builder.
+const batchExec = new SpRestBatchBuilder(siteUrl);
 
 // New list items to insert.
 const toInsert = [{Title: 'My Title 1'}, {Title: 'My Title 2'}];
