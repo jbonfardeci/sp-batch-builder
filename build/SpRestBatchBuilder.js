@@ -45,6 +45,11 @@ var SpRestBatchBuilder = /** @class */ (function () {
         siteUrl = /\/$/.test(siteUrl) ? siteUrl : siteUrl + '/';
         return siteUrl + "_api/web/lists(guid'" + listGuid + "')/items" + (itemId ? "(" + itemId + ")" : '');
     };
+    SpRestBatchBuilder.prototype.get = function (endpoint, headers) {
+        var batchRequest = new BatchRequest(endpoint, null, headers, 'GET');
+        this.loadRequest(batchRequest);
+        return this;
+    };
     SpRestBatchBuilder.prototype.insert = function (siteUrl, listGuid, payload, type) {
         var endpoint = this.createListItemsUrl(siteUrl, listGuid);
         var data = $.extend(payload, { __metadata: { type: type } });
