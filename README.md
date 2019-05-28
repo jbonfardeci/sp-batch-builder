@@ -1,7 +1,9 @@
 # SharePoint Batch Builder
 A utility to simplify building batch requests in SharePoint.
 
-This utility was adapted and extended from https://github.com/SteveCurran/sp-rest-batch-execution/blob/master/RestBatchExecutor.js
+This utility was adapted and extended from https://github.com/SteveCurran/sp-rest-batch-execution/blob/master/RestBatchExecutor.js.
+
+For the Microsoft documentation on batch requests, please see https://docs.microsoft.com/en-us/sharepoint/dev/sp-add-ins/make-batch-requests-with-the-rest-apis.
 
 Batch requests allow you to send multiple create/read/update/delete operations all with one request. While this SharePoint REST API 
 greatly reduces network chatter, build a Batch request is not so straight forward.
