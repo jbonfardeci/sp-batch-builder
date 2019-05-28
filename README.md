@@ -6,9 +6,9 @@ This utility was adapted and extended from https://github.com/SteveCurran/sp-res
 For the Microsoft documentation on batch requests, please see https://docs.microsoft.com/en-us/sharepoint/dev/sp-add-ins/make-batch-requests-with-the-rest-apis.
 
 Batch requests allow you to send multiple create/read/update/delete operations all with one request. While this SharePoint REST API 
-greatly reduces network chatter, build a Batch request is not so straight forward.
+greatly reduces network chatter, building a batch request is not so straight forward.
 
-A Batch request is sent in the body of a POST request even though you can send GET, POST, MERGE, and DELETE requests together.
+A batch request is sent in the body of a POST request even though you can send GET, POST, MERGE, and DELETE requests together.
 
 From the batch body example below, it's easy to tell building a batch request is hard:
 
