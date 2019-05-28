@@ -72,9 +72,9 @@ The Batch Builder utility greatly simplifies building a batch request. For examp
 ```(JavaScript)
 
 const siteUrl = 'https://my-sharepoint-site.com/sites/my-site;
-const listGuid = 'my-list-guid';
-const camlListName = 'camlListName';
-const listItemType = `SP.Data.${camlListName}ListItem`;
+const listGuid = '<my-list-guid>';
+const listName = '<PascalCaseListName>';
+const listItemType = `SP.Data.${listName}ListItem`;
 
 // Instantiate batch builder.
 const batchExec = new SpRestBatchBuilder(siteUrl);
