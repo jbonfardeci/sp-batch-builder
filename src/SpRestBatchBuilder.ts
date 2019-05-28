@@ -31,17 +31,37 @@ export class SpRestBatchBuilder {
 
   }
 
+  // #region public methods.
+
+  /**
+   * Format list items endpoint.
+   * @param siteUrl 
+   * @param listGuid 
+   * @param itemId 
+   */
   public createListItemsUrl(siteUrl: string, listGuid: string, itemId?: number): string {
     siteUrl = /\/$/.test(siteUrl) ? siteUrl : siteUrl + '/';
     return `${siteUrl}_api/web/lists(guid'${listGuid}')/items` + (itemId ? `(${itemId})` : '');
   }
 
+  /**
+   * Add a GET request to be executed.
+   * @param endpoint 
+   * @param headers 
+   */
   public get(endpoint: string, headers?: any): SpRestBatchBuilder {
     const batchRequest = new BatchRequest(endpoint, null, headers, 'GET');
     this.loadRequest(batchRequest);
     return this;
   }
 
+  /**
+   * Add an INSERT request to be executed.
+   * @param siteUrl 
+   * @param listGuid 
+   * @param payload 
+   * @param type 
+   */
   public insert(siteUrl: string, listGuid: string, payload: any, type: string): SpRestBatchBuilder{
     const endpoint = this.createListItemsUrl(siteUrl, listGuid);
     const data = $.extend(payload, { __metadata: { type: type } });
@@ -50,6 +70,14 @@ export class SpRestBatchBuilder {
     return this;
   }
 
+  /**
+   * Add an UPDATE request to be executed.
+   * @param siteUrl 
+   * @param listGuid 
+   * @param payload 
+   * @param type 
+   * @param etag 
+   */
   public update(siteUrl: string, listGuid: string, payload: any, type: string, etag: string = '*'): SpRestBatchBuilder {
     const endpoint = this.createListItemsUrl(siteUrl, listGuid, payload.Id);
     const data = $.extend(payload, { __metadata: { type: type } });
@@ -58,35 +86,18 @@ export class SpRestBatchBuilder {
     return this;
   }
 
+  /**
+   * Add a DELETE request to be executed.
+   * @param siteUrl 
+   * @param listGuid 
+   * @param itemId 
+   * @param etag 
+   */
   public delete(siteUrl: string, listGuid: string, itemId: number, etag: string = '*'): SpRestBatchBuilder {
     const endpoint = this.createListItemsUrl(siteUrl, listGuid, itemId);
     const batchRequest = new BatchRequest(endpoint, null, {'If-Match': etag}, 'DELETE');
     this.loadChangeRequest(batchRequest);
     return this;
-  }
-
-  /**
-   * Get the ASP.NET form degist authentication token.
-   * If doesn't exist on the .aspx page (or other) get a new one from the API.
-   */
-  public getFormDigest(): JQueryPromise<string> {
-    const d = $.Deferred();
-    const digest: HTMLInputElement = <HTMLInputElement>document.querySelector('#__REQUESTDIGEST');
-
-    if(!!(digest || {value: undefined}).value) {
-      d.resolve(digest.value);
-      return d.promise();
-    }
-
-    $.ajax({
-      'url': this.appWebUrl + '_api/contextinfo',
-      'method': 'POST',
-      'headers': { 'Accept': 'application/json;odata=verbose' }
-    }).done((digest) => {
-      d.resolve(digest.d.GetContextWebInformation.FormDigestValue);
-    });
-
-    return d.promise();
   }
 
   /**
@@ -123,6 +134,35 @@ export class SpRestBatchBuilder {
     });
 
     return dfd.promise();
+  }
+
+  // #endregion
+
+
+  // #region private methods.
+
+  /**
+   * Get the ASP.NET form degist authentication token.
+   * If doesn't exist on the .aspx page (or other) get a new one from the API.
+   */
+  private getFormDigest(): JQueryPromise<string> {
+    const d = $.Deferred();
+    const digest: HTMLInputElement = <HTMLInputElement>document.querySelector('#__REQUESTDIGEST');
+
+    if(!!(digest || {value: undefined}).value) {
+      d.resolve(digest.value);
+      return d.promise();
+    }
+
+    $.ajax({
+      'url': this.appWebUrl + '_api/contextinfo',
+      'method': 'POST',
+      'headers': { 'Accept': 'application/json;odata=verbose' }
+    }).done((digest) => {
+      d.resolve(digest.d.GetContextWebInformation.FormDigestValue);
+    });
+
+    return d.promise();
   }
 
   /**
@@ -327,5 +367,7 @@ export class SpRestBatchBuilder {
 
     return jsonString;
   }
+
+  // #endregion
 
 }
