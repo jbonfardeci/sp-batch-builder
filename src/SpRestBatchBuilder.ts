@@ -1,5 +1,10 @@
 import * as $ from 'jquery';
 
+export interface IBatchResult {
+  id: number;
+  result: RestBatchResult
+}
+
 export class RestBatchResult {
   public status: string = '';
   public result: any = null;
@@ -169,7 +174,7 @@ export class SpRestBatchBuilder {
    * Send the Batch body to be processed by the REST API.
    * @param batchBody
    */
-  private executeJQueryAsync(batchBody: string): JQueryPromise<any> {
+  private executeJQueryAsync(batchBody: string): JQueryPromise<IBatchResult[]> {
     const self = this;
     const dfd = $.Deferred();
     const batchUrl = this.appWebUrl + "_api/$batch";
@@ -290,7 +295,7 @@ export class SpRestBatchBuilder {
     batchCommand.push('');
   }
 
-  private buildResults(responseBody: string): any[] {
+  private buildResults(responseBody: string): IBatchResult[] {
     const self = this;
     const responseBoundary = responseBody.substring(0, 52);
     const resultTemp = responseBody.split(responseBoundary);
@@ -308,7 +313,8 @@ export class SpRestBatchBuilder {
         batchResult.result = self.getResult(batchResult.status, responseTemp);
 
         //assign return token to result
-        resultData.push({ id: self.resultsIndex[k - 1], result: batchResult });
+        const result: IBatchResult = { id: self.resultsIndex[k - 1], result: batchResult };
+        resultData.push(result);
       }
     });
 
