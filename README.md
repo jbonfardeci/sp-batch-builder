@@ -105,3 +105,17 @@ batchExec.executeAsync().done((result) => {
 });
 
 ```
+
+You may also chain operations. For example:
+
+```(JavaScript)
+    //...cont'd
+
+    batchExec
+        .insert(siteUrl, listGuid, {Title: "Don't Panic"}, listItemType)
+        .delete(siteUrl, listGuid, 42, '*')
+        .executeAsync().done((result) => {
+            console.info(result);
+        });
+
+```
