@@ -34,8 +34,8 @@ exports.BatchRequest = BatchRequest;
  * Build and execute Batch requests for the SharePoint REST API.
  * Adapted and extended from https://github.com/SteveCurran/sp-rest-batch-execution/blob/master/RestBatchExecutor.js
  */
-var SpRestBatchBuilder = /** @class */ (function () {
-    function SpRestBatchBuilder(appWebUrl) {
+var SpBatchBuilder = /** @class */ (function () {
+    function SpBatchBuilder(appWebUrl) {
         this.appWebUrl = appWebUrl;
         this.changeRequests = [];
         this.getRequests = [];
@@ -48,7 +48,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * @param listGuid
      * @param itemId
      */
-    SpRestBatchBuilder.prototype.createListItemsUrl = function (siteUrl, listGuid, itemId) {
+    SpBatchBuilder.prototype.createListItemsUrl = function (siteUrl, listGuid, itemId) {
         siteUrl = /\/$/.test(siteUrl) ? siteUrl : siteUrl + '/';
         return siteUrl + "_api/web/lists(guid'" + listGuid + "')/items" + (itemId ? "(" + itemId + ")" : '');
     };
@@ -57,7 +57,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * @param endpoint
      * @param headers
      */
-    SpRestBatchBuilder.prototype.get = function (endpoint, headers) {
+    SpBatchBuilder.prototype.get = function (endpoint, headers) {
         var batchRequest = new BatchRequest(endpoint, null, headers, 'GET');
         this.loadRequest(batchRequest);
         return this;
@@ -69,7 +69,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * @param payload
      * @param type
      */
-    SpRestBatchBuilder.prototype.insert = function (siteUrl, listGuid, payload, type) {
+    SpBatchBuilder.prototype.insert = function (siteUrl, listGuid, payload, type) {
         var endpoint = this.createListItemsUrl(siteUrl, listGuid);
         var data = $.extend(payload, { __metadata: { type: type } });
         var batchRequest = new BatchRequest(endpoint, data, null, 'POST');
@@ -84,7 +84,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * @param type
      * @param etag
      */
-    SpRestBatchBuilder.prototype.update = function (siteUrl, listGuid, payload, type, etag) {
+    SpBatchBuilder.prototype.update = function (siteUrl, listGuid, payload, type, etag) {
         if (etag === void 0) { etag = '*'; }
         var endpoint = this.createListItemsUrl(siteUrl, listGuid, payload.Id);
         var data = $.extend(payload, { __metadata: { type: type } });
@@ -99,7 +99,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * @param itemId
      * @param etag
      */
-    SpRestBatchBuilder.prototype.delete = function (siteUrl, listGuid, itemId, etag) {
+    SpBatchBuilder.prototype.delete = function (siteUrl, listGuid, itemId, etag) {
         if (etag === void 0) { etag = '*'; }
         var endpoint = this.createListItemsUrl(siteUrl, listGuid, itemId);
         var batchRequest = new BatchRequest(endpoint, null, { 'If-Match': etag }, 'DELETE');
@@ -110,7 +110,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * Load a list item change request (POST, MEGRE, DELETE) into the batch collection to be sent to the server.
      * @param request
      */
-    SpRestBatchBuilder.prototype.loadChangeRequest = function (request) {
+    SpBatchBuilder.prototype.loadChangeRequest = function (request) {
         request.resultToken = this.getUniqueId();
         this.changeRequests.push($.extend({}, request));
         return request.resultToken;
@@ -119,7 +119,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * Load a GET list item request into the batch collection to be sent to the server.
      * @param request
      */
-    SpRestBatchBuilder.prototype.loadRequest = function (request) {
+    SpBatchBuilder.prototype.loadRequest = function (request) {
         request.resultToken = this.getUniqueId();
         this.getRequests.push($.extend({}, request));
         return request.resultToken;
@@ -127,7 +127,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
     /**
      * Execute AJAX request.
      */
-    SpRestBatchBuilder.prototype.executeAsync = function () {
+    SpBatchBuilder.prototype.executeAsync = function () {
         var dfd = $.Deferred();
         var payload = this.buildBatch();
         this.executeJQueryAsync(payload).done(function (result) {
@@ -143,7 +143,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * Get the ASP.NET form degist authentication token.
      * If doesn't exist on the .aspx page (or other) get a new one from the API.
      */
-    SpRestBatchBuilder.prototype.getFormDigest = function () {
+    SpBatchBuilder.prototype.getFormDigest = function () {
         var d = $.Deferred();
         var digest = document.querySelector('#__REQUESTDIGEST');
         if (!!(digest || { value: undefined }).value) {
@@ -163,7 +163,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
      * Send the Batch body to be processed by the REST API.
      * @param batchBody
      */
-    SpRestBatchBuilder.prototype.executeJQueryAsync = function (batchBody) {
+    SpBatchBuilder.prototype.executeJQueryAsync = function (batchBody) {
         var self = this;
         var dfd = $.Deferred();
         var batchUrl = this.appWebUrl + "_api/$batch";
@@ -192,7 +192,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         }
         return dfd.promise();
     };
-    SpRestBatchBuilder.prototype.getBatchRequestHeaders = function (headers, batchCommand) {
+    SpBatchBuilder.prototype.getBatchRequestHeaders = function (headers, batchCommand) {
         var isAccept = false;
         if (headers) {
             $.each(Object.keys(headers), function (k, v) {
@@ -209,7 +209,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
     /**
      * Build the batch body command.
      */
-    SpRestBatchBuilder.prototype.buildBatch = function () {
+    SpBatchBuilder.prototype.buildBatch = function () {
         var self = this;
         var batchCommand = [];
         var batchBody;
@@ -236,7 +236,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         batchBody = batchCommand.join('\r\n');
         return batchBody;
     };
-    SpRestBatchBuilder.prototype.buildBatchChangeRequest = function (batchCommand, request, batchIndex) {
+    SpBatchBuilder.prototype.buildBatchChangeRequest = function (batchCommand, request, batchIndex) {
         batchCommand.push("--changeset_f9c96a07-641a-4897-90ed-d285d2dbfc2e");
         batchCommand.push("Content-Type: application/http");
         batchCommand.push("Content-Transfer-Encoding: binary");
@@ -257,7 +257,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
             batchCommand.push('');
         }
     };
-    SpRestBatchBuilder.prototype.buildBatchGetRequest = function (batchCommand, request, batchIndex) {
+    SpBatchBuilder.prototype.buildBatchGetRequest = function (batchCommand, request, batchIndex) {
         batchCommand.push("--batch_8890ae8a-f656-475b-a47b-d46e194fa574");
         batchCommand.push('Content-Type: application/http');
         batchCommand.push('Content-Transfer-Encoding: binary');
@@ -267,7 +267,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         this.getBatchRequestHeaders(request.headers, batchCommand);
         batchCommand.push('');
     };
-    SpRestBatchBuilder.prototype.buildResults = function (responseBody) {
+    SpBatchBuilder.prototype.buildResults = function (responseBody) {
         var self = this;
         var responseBoundary = responseBody.substring(0, 52);
         var resultTemp = responseBody.split(responseBoundary);
@@ -287,7 +287,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         });
         return resultData;
     };
-    SpRestBatchBuilder.prototype.getResult = function (status, response) {
+    SpBatchBuilder.prototype.getResult = function (status, response) {
         switch (status) {
             case "400":
             case "404":
@@ -301,13 +301,13 @@ var SpRestBatchBuilder = /** @class */ (function () {
                 return this.parseJSON(response[4]);
         }
     };
-    SpRestBatchBuilder.prototype.getUniqueId = function () {
+    SpBatchBuilder.prototype.getUniqueId = function () {
         return (this.randomNum() + this.randomNum() + this.randomNum() + this.randomNum() + this.randomNum() + this.randomNum() + this.randomNum() + this.randomNum());
     };
-    SpRestBatchBuilder.prototype.randomNum = function () {
+    SpBatchBuilder.prototype.randomNum = function () {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
-    SpRestBatchBuilder.prototype.clearRequests = function () {
+    SpBatchBuilder.prototype.clearRequests = function () {
         while (!!this.changeRequests.length) {
             this.changeRequests.pop();
         }
@@ -319,7 +319,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         }
     };
     ;
-    SpRestBatchBuilder.prototype.parseJSON = function (jsonString) {
+    SpBatchBuilder.prototype.parseJSON = function (jsonString) {
         try {
             var o = JSON.parse(jsonString);
             // Handle non-exception-throwing cases:
@@ -333,7 +333,7 @@ var SpRestBatchBuilder = /** @class */ (function () {
         catch (e) { }
         return jsonString;
     };
-    return SpRestBatchBuilder;
+    return SpBatchBuilder;
 }());
-exports.SpRestBatchBuilder = SpRestBatchBuilder;
+exports.SpBatchBuilder = SpBatchBuilder;
 //# sourceMappingURL=SpRestBatchBuilder.js.map

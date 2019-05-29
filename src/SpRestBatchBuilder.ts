@@ -26,7 +26,7 @@ export class BatchRequest {
  * Build and execute Batch requests for the SharePoint REST API.
  * Adapted and extended from https://github.com/SteveCurran/sp-rest-batch-execution/blob/master/RestBatchExecutor.js
  */
-export class SpRestBatchBuilder {
+export class SpBatchBuilder {
 
   private changeRequests: any[] = [];
   private getRequests: any[] = [];
@@ -54,7 +54,7 @@ export class SpRestBatchBuilder {
    * @param endpoint 
    * @param headers 
    */
-  public get(endpoint: string, headers?: any): SpRestBatchBuilder {
+  public get(endpoint: string, headers?: any): SpBatchBuilder {
     const batchRequest = new BatchRequest(endpoint, null, headers, 'GET');
     this.loadRequest(batchRequest);
     return this;
@@ -67,7 +67,7 @@ export class SpRestBatchBuilder {
    * @param payload 
    * @param type 
    */
-  public insert(siteUrl: string, listGuid: string, payload: any, type: string): SpRestBatchBuilder{
+  public insert(siteUrl: string, listGuid: string, payload: any, type: string): SpBatchBuilder{
     const endpoint = this.createListItemsUrl(siteUrl, listGuid);
     const data = $.extend(payload, { __metadata: { type: type } });
     const batchRequest = new BatchRequest(endpoint, data, null, 'POST');
@@ -83,7 +83,7 @@ export class SpRestBatchBuilder {
    * @param type 
    * @param etag 
    */
-  public update(siteUrl: string, listGuid: string, payload: any, type: string, etag: string = '*'): SpRestBatchBuilder {
+  public update(siteUrl: string, listGuid: string, payload: any, type: string, etag: string = '*'): SpBatchBuilder {
     const endpoint = this.createListItemsUrl(siteUrl, listGuid, payload.Id);
     const data = $.extend(payload, { __metadata: { type: type } });
     const batchRequest = new BatchRequest(endpoint, data, {'If-Match': etag}, 'MERGE');
@@ -98,7 +98,7 @@ export class SpRestBatchBuilder {
    * @param itemId 
    * @param etag 
    */
-  public delete(siteUrl: string, listGuid: string, itemId: number, etag: string = '*'): SpRestBatchBuilder {
+  public delete(siteUrl: string, listGuid: string, itemId: number, etag: string = '*'): SpBatchBuilder {
     const endpoint = this.createListItemsUrl(siteUrl, listGuid, itemId);
     const batchRequest = new BatchRequest(endpoint, null, {'If-Match': etag}, 'DELETE');
     this.loadChangeRequest(batchRequest);

@@ -77,7 +77,7 @@ const listName = '<PascalCaseListName>';
 const listItemType = `SP.Data.${listName}ListItem`;
 
 // Instantiate batch builder.
-const batchExec = new SpRestBatchBuilder(siteUrl);
+const batchExec = new SpBatchBuilder(siteUrl);
 
 // New list items to insert.
 const toInsert = [{Title: 'My Title 1'}, {Title: 'My Title 2'}];
