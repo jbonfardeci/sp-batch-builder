@@ -5,6 +5,9 @@ This utility was adapted and extended from https://github.com/SteveCurran/sp-res
 
 For the Microsoft documentation on batch requests, please see https://docs.microsoft.com/en-us/sharepoint/dev/sp-add-ins/make-batch-requests-with-the-rest-apis.
 
+## Installation
+`npm i sp-batch-builder`
+
 Batch requests allow you to send multiple create/read/update/delete operations all with one request. While this SharePoint REST API 
 greatly reduces network chatter, building a batch request is not so straight forward.
 
